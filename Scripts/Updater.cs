@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using VladB.Utility;
 
 namespace TamrielTradeApp
 {
@@ -11,27 +9,26 @@ namespace TamrielTradeApp
     {
         private Form1 form => Form1.Instance;
 
-        public Timer timer_updateBtnUnHide = new(1f);
-        public Timer timer_updateProgressBar = new(0.05f);
-        public Timer timer_updateItemList = new(5f);
+        public readonly Timer Timer_UpdateBtnUnHide = new(1f);
+        public readonly Timer Timer_UpdateProgressBar = new(0.05f);
+        public readonly Timer Timer_UpdateItemList = new(5f);
 
-        public List<Timer> timers;
+        private List<Timer> Timers { get; set; }
 
         public void Init()
         {
-            timers = new List<Timer>()
+            Timers = new List<Timer>()
             {
-                timer_updateBtnUnHide,
-                timer_updateProgressBar,
-                timer_updateItemList
+                Timer_UpdateBtnUnHide,
+                Timer_UpdateProgressBar,
+                Timer_UpdateItemList
             };
-            //timers.AddRange(new List<Timer>() { timer_updateBtnUnHide, timer_updateItemList });
 
-            timer_updateBtnUnHide.OnEndTime += Update_BtnUnHide; //TODO Вынести
-            timer_updateItemList.OnEndTime += UpdateItemsUI;
-            timer_updateProgressBar.OnEndTime += UpdateProgressBar;
+            Timer_UpdateBtnUnHide.OnEndTime += Update_BtnUnHide; //TODO Вынести
+            Timer_UpdateItemList.OnEndTime += UpdateItemsUI;
+            Timer_UpdateProgressBar.OnEndTime += UpdateProgressBar;
 
-            timers.Act(t => { t.TimerSetActive(true, true); });
+            Timers.ForEach(t => { t.TimerSetActive(true, true); });
 
             new TaskFactory().StartNew(async () => await UpdateTask());
         }
@@ -43,17 +40,14 @@ namespace TamrielTradeApp
                 Stopwatch sw = Stopwatch.StartNew();
                 await Task.Delay(deltaMilliseconds);
                 sw.Stop();
-                form.Invoke((Action)(() => UpdateTimers(sw.ElapsedMilliseconds / 1000f)));
+                form.Invoke(() => UpdateTimers(sw.ElapsedMilliseconds / 1000f));
             }
         }
 
         private void UpdateTimers(float deltaTime)
         {
-            timers.Act(t => t.UpdateFunc(deltaTime));
+            Timers.ForEach(t => t.UpdateFunc(deltaTime));
         }
-
-
-        //---------------------------------------------------
 
         private void Update_BtnUnHide()
         {
@@ -68,7 +62,7 @@ namespace TamrielTradeApp
 
         private void UpdateProgressBar()
         {
-            int value = (int)(100 * (1f - (timer_updateItemList.CurrentTime / timer_updateItemList.MaxTimeValue)));
+            int value = (int)(100 * (1f - (Timer_UpdateItemList.CurrentTime / Timer_UpdateItemList.MaxTimeValue)));
             form.pictureBox2.Size = new System.Drawing.Size(value, 15);
         }
     }

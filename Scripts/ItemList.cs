@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using VladB.Utility;
 
 namespace TamrielTradeApp
 {
@@ -10,7 +9,7 @@ namespace TamrielTradeApp
 
         public void AddItems(List<ItemInfo> newItems)
         {
-            newItems.Act(newItem =>
+            newItems.ForEach(newItem =>
             {
                 ItemInfo existedCopy = Items.FirstOrDefault(item => item.IsEqual(newItem));
                 if (existedCopy != null)
@@ -43,7 +42,7 @@ namespace TamrielTradeApp
 
         public void SetAllIsHidden(bool isHidden)
         {
-            Items.Act(it => it.IsHidden = isHidden);
+            Items.ForEach(it => it.IsHidden = isHidden);
         }
     }
 }

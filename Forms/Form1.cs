@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
-using VladB.Utility;
 
 namespace TamrielTradeApp
 {
@@ -120,7 +119,7 @@ namespace TamrielTradeApp
 
             dataGridView1.Rows.Clear();
 
-            ItemList.Items.Where(it => !it.IsTrash()).Act(item =>
+            ItemList.Items.Where(it => !it.IsTrash()).ToList().ForEach(item =>
             {
                 dataGridView1.Rows.Add(
                     item.Image?.Clone(),
@@ -147,7 +146,7 @@ namespace TamrielTradeApp
                 }
             });
 
-            Updater.timer_updateItemList.TimerSetActive(Updater.timer_updateItemList.IsTimerActive, true);
+            Updater.Timer_UpdateItemList.TimerSetActive(Updater.Timer_UpdateItemList.IsTimerActive, true);
         }
 
         private void LinkLabelBtn_UnHideAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
